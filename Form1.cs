@@ -101,5 +101,64 @@ namespace EncryptDecrypt
             //I'm adding a message box just so the user has some confirmation.
             MessageBox.Show("Your file has been encrypted.");
         }
+
+        //Now we kind of just do this whole thing in reverse
+
+        private void decryptionButton_Click(Object sender, EventArgs e)
+        {
+            //instead of retyping the entire dictionary, we can just reverse it
+            //first we have to create a new empty dictionary that we will use to decrypt
+            Dictionary<char, char> decryption = new Dictionary<char, char>();
+
+            //can put together a quick loop to look through all the key and value pairs in our original dictionary
+            foreach (KeyValuePair<char, char> pair in characterPairs)
+            {
+                //This part switches keys and values around as our loop iterates through our entire dictionary
+                //as it goes through and switches, it adds the 'new' keys and values to our decryption dictionary
+                decryption[pair.Value] = pair.Key;
+            }
+
+            //now that that part is out of the way, everything else is going to look the same as the first part because it kind of is
+
+            //opening another box for the user to choose a file to upload
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.ShowDialog();
+
+            //establishing a string for the line of text like earlier
+            string lineOfText2;
+
+            //Read the file
+            //another thanks to chapter 5
+            StreamReader userFile2 = File.OpenText(dialog.FileName);
+
+            //create another file to write to like earlier
+            StreamWriter programFile2 = File.CreateText("Decoded.txt");
+
+            //Same loop as earlier, same rules, same process
+            while ((lineOfText2 = userFile2.ReadLine()) != null) 
+            {
+                string decodedLine = "";
+
+                foreach (char i in decodedLine)
+                {
+                    if (decryption.ContainsKey(i))
+                        decodedLine += decryption[i];
+                    else
+                        decodedLine += i;
+                }
+
+                programFile2.WriteLine(decodedLine);
+            }
+
+            userFile2.Close();
+            programFile2.Close();
+
+            MessageBox.Show("Your file has been decrypted.");
+    }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
